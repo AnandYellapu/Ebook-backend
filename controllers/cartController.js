@@ -39,7 +39,7 @@ const addToCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
   try {
     const { id } = req.params;
-    const removedItem = await CartItem.findByIdAndRemove(id);
+    const removedItem = await CartItem.findOneAndDelete({ _id: id });
     if (!removedItem) {
       return res.status(404).json({ error: 'Item not found in cart' });
     }
@@ -49,6 +49,7 @@ const removeFromCart = async (req, res) => {
     res.status(500).json({ error: 'Could not remove item from cart' });
   }
 };
+
 
 
 
