@@ -40,10 +40,10 @@ const sendEmail = async (email, resetToken) => {
             <h2 style="color: #333; text-align: center;">Password Reset Request</h2>
             <p style="font-size: 16px; color: #555; text-align: center;">You've requested to reset your password. Click the button below to proceed.</p>
             <div style="text-align: center; margin-top: 20px;">
-              <a href="http://localhost:3000/reset-password/${resetToken}" style="display: inline-block; background-color: #007bff; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 5px; font-size: 18px;">Reset Password</a>
+              <a href="https://eboook.netlify.app/reset-password/${resetToken}" style="display: inline-block; background-color: #007bff; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 5px; font-size: 18px;">Reset Password</a>
             </div>
             <div style="text-align: center; margin-top: 20px;">
-              <p style="font-size: 14px; color: #777;">If you have trouble clicking the button above, you can also <a href="http://localhost:3000/reset-password/${resetToken}" style="color: #007bff; text-decoration: none;">reset your password here</a>.</p>
+              <p style="font-size: 14px; color: #777;">If you have trouble clicking the button above, you can also <a href="https://eboook.netlify.app/reset-password/${resetToken}" style="color: #007bff; text-decoration: none;">reset your password here</a>.</p>
             </div>
           </div>
           <div style="margin-top: 20px; text-align: center;">
