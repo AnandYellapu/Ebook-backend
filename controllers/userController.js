@@ -230,11 +230,17 @@ const forgotPassword = async (req, res) => {
 
 
 
-// Reset password controller
+
 const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
+
+    // Input validation using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
     // Find user by reset token
     const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
@@ -255,6 +261,37 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ error: 'Failed to reset password' });
   }
 };
+
+
+
+
+
+
+// // Reset password controller
+// const resetPassword = async (req, res) => {
+//   try {
+//     const { token } = req.params;
+//     const { password } = req.body;
+
+//     // Find user by reset token
+//     const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
+//     if (!user) {
+//       return res.status(400).json({ message: 'Invalid or expired token' });
+//     }
+
+//     // Update password
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     user.password = hashedPassword;
+//     user.resetPasswordToken = null;
+//     user.resetPasswordExpires = null;
+//     await user.save();
+
+//     res.status(200).json({ message: 'Password reset successfully' });
+//   } catch (error) {
+//     console.error('Error resetting password:', error);
+//     res.status(500).json({ error: 'Failed to reset password' });
+//   }
+// };
 
 
 
