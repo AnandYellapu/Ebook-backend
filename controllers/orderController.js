@@ -313,6 +313,7 @@ const addFeedback = async (req, res) => {
   }
 };
 
+
 const deleteOrder = async (req, res) => {
   try {
     const orderId = req.params.orderId;
@@ -329,7 +330,7 @@ const deleteOrder = async (req, res) => {
     }
 
     // Perform the deletion of the specific order
-    await Order.findByIdAndRemove(orderId);
+    await Order.findOneAndDelete({ _id: orderId });
 
     res.status(204).send(); // Respond with a 204 No Content status code on successful deletion of the specific order.
   } catch (error) {
@@ -337,6 +338,7 @@ const deleteOrder = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 
