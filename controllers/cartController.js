@@ -2,6 +2,7 @@ const CartItem = require('../models/CartItem');
 const mongoose = require('mongoose');
 
 
+
 // Controller to add an item to the shopping cart
 const addToCart = async (req, res) => {
   try {
@@ -15,12 +16,20 @@ const addToCart = async (req, res) => {
       return res.status(400).json({ error: 'Invalid bookId' });
     }
 
+    // Check if the item with the same bookId already exists in the cart
+    const existingItem = await CartItem.findOne({ bookId: bookId });
+
+    // If the item already exists, return an error response
+    if (existingItem) {
+      return res.status(400).json({ error: 'Item already exists in the cart' });
+    }
+
     // Create a new CartItem with the received bookId
     const newItem = new CartItem({
       bookId: new mongoose.Types.ObjectId(bookId),
       title,
       price,
-      quantity: quantity || 1, 
+      quantity: quantity || 1,
     });
 
     const savedItem = await newItem.save();
@@ -31,6 +40,7 @@ const addToCart = async (req, res) => {
     res.status(500).json({ error: 'Could not add item to cart' });
   }
 };
+
 
 
 
@@ -83,9 +93,23 @@ const getCartItems = async (req, res) => {
 };
 
 
+
+
+const clearCart = async (req, res) => {
+  try {
+    await CartItem.deleteMany({});
+    res.json({ message: 'Cart cleared successfully' });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    res.status(500).json({ error: 'Could not clear cart' });
+  }
+};
+
+
 module.exports ={
     addToCart,
     removeFromCart,
     updateQuantity,
     getCartItems,
+    clearCart,
 }

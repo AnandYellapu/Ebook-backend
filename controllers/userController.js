@@ -8,6 +8,7 @@ const logger = require('../utils/logger');
 
 
 
+
 // Function to generate a random token
 const generateToken = () => {
   return Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2);
@@ -61,7 +62,6 @@ const sendEmail = async (email, resetToken) => {
   // Send email
   await transporter.sendMail(mailOptions);
 };
-
 
 
 
@@ -202,6 +202,7 @@ const updateProfile = async (req, res) => {
 
 
 
+
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
@@ -211,7 +212,12 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Generate and store reset token
+    // Check if there's already a valid reset token
+    if (user.resetPasswordExpires && user.resetPasswordExpires > Date.now()) {
+      return res.status(400).json({ message: 'A reset token is already active for this user' });
+    }
+
+    // Generate and store new reset token
     const token = generateToken();
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
@@ -225,9 +231,6 @@ const forgotPassword = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
-
 
 
 
@@ -248,6 +251,12 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired token' });
     }
 
+    // Password strength requirements
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({ message: 'Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters' });
+    }
+
     // Update password
     const hashedPassword = await bcrypt.hash(password, 10);
     user.password = hashedPassword;
@@ -265,33 +274,6 @@ const resetPassword = async (req, res) => {
 
 
 
-
-
-// // Reset password controller
-// const resetPassword = async (req, res) => {
-//   try {
-//     const { token } = req.params;
-//     const { password } = req.body;
-
-//     // Find user by reset token
-//     const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
-//     if (!user) {
-//       return res.status(400).json({ message: 'Invalid or expired token' });
-//     }
-
-//     // Update password
-//     const hashedPassword = await bcrypt.hash(password, 10);
-//     user.password = hashedPassword;
-//     user.resetPasswordToken = null;
-//     user.resetPasswordExpires = null;
-//     await user.save();
-
-//     res.status(200).json({ message: 'Password reset successfully' });
-//   } catch (error) {
-//     console.error('Error resetting password:', error);
-//     res.status(500).json({ error: 'Failed to reset password' });
-//   }
-// };
 
 
 
