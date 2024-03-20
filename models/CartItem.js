@@ -1,8 +1,12 @@
-
 const mongoose = require('mongoose');
 
 // Define the schema for the shopping cart item
 const cartItemSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Reference to the User model
+    required: true,
+  },
   bookId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Book', // Reference to the Book model

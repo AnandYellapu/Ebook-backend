@@ -17,6 +17,8 @@ router.post('/forgot-password', userController.forgotPassword);
 // Reset password route
 router.post('/reset-password/:token', userController.resetPassword);
 
+router.delete('/delete', authMiddleware, userController.deleteAccount);
+
 module.exports = router;
 
 

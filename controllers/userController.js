@@ -274,6 +274,27 @@ const resetPassword = async (req, res) => {
 
 
 
+// Endpoint to delete user account
+const deleteAccount = async (req, res) => {
+  const { userId } = req.user;
+
+  try {
+    // Find user by ID and delete
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Invalidate user token
+    res.clearCookie('token'); // Assuming you're using cookies for storing tokens
+
+    // Add any additional cleanup or related actions here
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
 
@@ -286,6 +307,7 @@ module.exports = {
     updateProfile,
     forgotPassword,
     resetPassword,
+    deleteAccount,
 };
 
 
